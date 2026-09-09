@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ParcelGuard | Smart Box</title>
+    <title>Confidential Box</title>
+    <link rel="icon" type="image/png" href="safe-box.png">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -206,21 +207,37 @@
         }
         .tag {
             position: absolute;
-            border: 1px solid #555;
-            padding: 0.4rem 1.2rem;
-            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            padding: 0.45rem 1.2rem;
+            border-radius: 999px;
             font-size: clamp(0.68rem, 1vw, 0.85rem);
-            background: var(--bg);
-            color: #ccc;
-            font-weight: 600;
+            background: rgba(26, 26, 26, 0.82);
+            color: #f1f5f9;
+            font-weight: 700;
+            letter-spacing: 0.02em;
             white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+            transform: translate(var(--tx, 0px), var(--ty, 0px)) rotate(var(--base-rotate, 0deg));
+            transition: box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.18s ease;
+            will-change: transform;
         }
-        .t1 { bottom: 0; left: 0; transform: rotate(-12deg); }
-        .t2 { bottom: 40px; left: 40px; transform: rotate(8deg); }
-        .t3 { bottom: 10px; left: 130px; transform: rotate(-6deg); }
-        .t4 { bottom: 65px; left: 160px; transform: rotate(14deg); }
-        .t5 { bottom: 25px; left: 230px; transform: rotate(-16deg); }
-        .t6 { bottom: 75px; left: 260px; transform: rotate(10deg); }
+        .tag:hover,
+        .tag.is-hovered {
+            border-color: rgba(43, 207, 206, 0.9);
+            background: rgba(43, 207, 206, 0.1);
+            box-shadow: 0 0 18px rgba(43, 207, 206, 0.35), 0 12px 30px rgba(0, 0, 0, 0.22);
+        }
+        .tag:active {
+            transform: translate(var(--tx, 0px), var(--ty, 0px)) rotate(var(--base-rotate, 0deg)) scale(1.04);
+        }
+        .t1 { --base-rotate: -12deg; bottom: 0; left: 0; }
+        .t2 { --base-rotate: 8deg; bottom: 40px; left: 40px; }
+        .t3 { --base-rotate: -6deg; bottom: 10px; left: 130px; }
+        .t4 { --base-rotate: 14deg; bottom: 65px; left: 160px; }
+        .t5 { --base-rotate: -16deg; bottom: 25px; left: 230px; }
+        .t6 { --base-rotate: 10deg; bottom: 75px; left: 260px; }
 
         /* RIGHT SIDEBAR GRID/TUNNEL */
         .sidebar {
@@ -262,25 +279,85 @@
         .col-1 img { opacity: 0.8; filter: grayscale(1); height: 24px; }
         
         .col-2 { gap: 1.5rem; }
-        .avatars { display: flex; }
+        .team-cluster {
+            display: flex;
+            align-items: center;
+            gap: 1.3rem;
+        }
+        .avatars {
+            display: flex;
+            align-items: center;
+            padding-left: 0;
+        }
         .avatar {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             background: #444;
-            border: 2px solid var(--bg);
+            border: 3px solid rgba(28, 28, 28, 0.9);
             margin-left: -12px;
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 0.75rem; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
             font-weight: 700;
+            color: white;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.2, 1),
+                        margin 0.35s ease,
+                        box-shadow 0.35s ease,
+                        filter 0.35s ease,
+                        opacity 0.35s ease;
+            box-shadow: 0 10px 18px rgba(0, 0, 0, 0.24);
         }
-        .avatar:first-child { margin-left: 0; background: #6366f1; }
+        .avatar:first-child { margin-left: 0; }
+        .avatar:nth-child(1) { background: #6366f1; }
         .avatar:nth-child(2) { background: #ec4899; }
         .avatar:nth-child(3) { background: #14b8a6; }
         .avatar:nth-child(4) { background: #f59e0b; }
         .avatar:nth-child(5) { background: #8b5cf6; }
+        .avatar:hover,
+        .avatar.is-active {
+            transform: translateY(-8px) scale(1.26);
+            z-index: 10;
+            filter: brightness(1.08);
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.04), 0 18px 30px rgba(0, 0, 0, 0.35);
+        }
+        .avatar:not(.is-active):not(:hover) {
+            transform: translateY(0) scale(1);
+            z-index: 1;
+            filter: none;
+            box-shadow: 0 10px 18px rgba(0, 0, 0, 0.24);
+        }
+        .team-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            min-width: 200px;
+            overflow: hidden;
+        }
+        .team-title {
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: #fff;
+            letter-spacing: -0.04em;
+        }
+        .team-name {
+            color: #f3f4f6;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            transform: translateX(6px);
+            opacity: 0;
+            transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.2, 1), opacity 0.25s ease;
+            white-space: nowrap;
+        }
+        .team-name.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
         
         .col-3 { gap: 1.5rem; font-size: 0.95rem; line-height: 1.5; color: #bbb; }
         .red-star {
@@ -394,12 +471,12 @@
         <div class="header">
             <div class="logo">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-                ParcelGuard
+                Confidential Box
             </div>
             <div class="nav-links">
-                <span>Program</span>
-                <span>Hardware</span>
-                <span>About</span>
+                <span>Hardware and Program</span>
+                <span>How does it work?</span>
+                <span> About US!</span>
                 <button class="btn-login">LOG IN ↗</button>
             </div>
         </div>
@@ -434,16 +511,18 @@
                 <span>BSCPE - 4C</span>
             </div>
             <div class="footer-col col-2">
-                <div class="avatars">
-                    <div class="avatar">BA</div>
-                    <div class="avatar">CA</div>
-                    <div class="avatar">MA</div>
-                    <div class="avatar">PA</div>
-                    <div class="avatar">VE</div>
-                </div>
-                <div>
-                    <div style="font-weight: 800; font-size: 1.15rem; color: #fff;">Hardware & Software Team</div>
-                    <div style="color: #999; font-size: 0.9rem; margin-top: 0.2rem;">Basa, Carlos, Marquez, Paruli, Ventinilla</div>
+                <div class="team-cluster">
+                    <div class="avatars" aria-label="Team members">
+                        <div class="avatar is-active" data-name="Basa, Christian Khen ">BA</div>
+                        <div class="avatar" data-name="Carlos, Floyd Andrei">CA</div>
+                        <div class="avatar" data-name="Marquez, Ma. Luisa">MA</div>
+                        <div class="avatar" data-name="Paruli, Ashley Nichole">PA</div>
+                        <div class="avatar" data-name="Ventinilla, Ardie Raven">VE</div>
+                    </div>
+                    <div class="team-copy">
+                        <div class="team-title">Hardware & Software Team</div>
+                        <div class="team-name show" id="teamName">Pareceive po!</div>
+                    </div>
                 </div>
             </div>
             <div class="footer-col col-3">
@@ -455,5 +534,123 @@
             </div>
         </div>
     </div>
+
+    <script>
+        const pointer = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        const tags = Array.from(document.querySelectorAll('.tag'));
+
+        tags.forEach((tag, index) => {
+            tag.dataset.tx = '0';
+            tag.dataset.ty = '0';
+            tag.dataset.vx = '0';
+            tag.dataset.vy = '0';
+            tag.dataset.phase = String(index * 0.8 + Math.random() * 2);
+
+            tag.addEventListener('pointerdown', () => {
+                const angle = Math.random() * Math.PI * 2;
+                const force = 28;
+                tag.dataset.vx = String(Math.cos(angle) * force);
+                tag.dataset.vy = String(Math.sin(angle) * force);
+                tag.dataset.tx = String(Number(tag.dataset.tx) + Math.cos(angle) * 18);
+                tag.dataset.ty = String(Number(tag.dataset.ty) + Math.sin(angle) * 18);
+            });
+        });
+
+        window.addEventListener('pointermove', (event) => {
+            pointer.x = event.clientX;
+            pointer.y = event.clientY;
+        });
+
+        function animate() {
+            const time = performance.now() * 0.001;
+
+            tags.forEach((tag, index) => {
+                const tx = Number(tag.dataset.tx || 0);
+                const ty = Number(tag.dataset.ty || 0);
+                const vx = Number(tag.dataset.vx || 0);
+                const vy = Number(tag.dataset.vy || 0);
+
+                const rect = tag.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const dx = pointer.x - centerX;
+                const dy = pointer.y - centerY;
+                const distance = Math.hypot(dx, dy) || 1;
+
+                let forceX = 0;
+                let forceY = 0;
+
+                if (distance < 180) {
+                    const push = (1 - distance / 180) * 22;
+                    forceX -= (dx / distance) * push;
+                    forceY -= (dy / distance) * push;
+                    tag.classList.add('is-hovered');
+                } else {
+                    tag.classList.remove('is-hovered');
+                }
+
+                const driftX = Math.sin(time * 1.7 + Number(tag.dataset.phase)) * 1.5;
+                const driftY = Math.cos(time * 1.5 + Number(tag.dataset.phase)) * 1.5;
+
+                const nextVx = (vx * 0.82) + (forceX + driftX) * 0.22;
+                const nextVy = (vy * 0.82) + (forceY + driftY) * 0.22;
+
+                const nextTx = tx * 0.88 + nextVx;
+                const nextTy = ty * 0.88 + nextVy;
+
+                tag.dataset.tx = String(nextTx);
+                tag.dataset.ty = String(nextTy);
+                tag.dataset.vx = String(nextVx);
+                tag.dataset.vy = String(nextVy);
+
+                tag.style.setProperty('--tx', `${nextTx}px`);
+                tag.style.setProperty('--ty', `${nextTy}px`);
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        requestAnimationFrame(animate);
+
+        const avatars = Array.from(document.querySelectorAll('.avatar'));
+        const teamName = document.getElementById('teamName');
+
+        function resetActiveAvatar() {
+            avatars.forEach((avatar) => avatar.classList.remove('is-active'));
+            if (teamName) {
+                teamName.classList.remove('show');
+                setTimeout(() => {
+                    teamName.textContent = 'Pareceive po!';
+                    teamName.classList.add('show');
+                }, 120);
+            }
+        }
+
+        function setActiveAvatar(target) {
+            avatars.forEach((avatar) => {
+                avatar.classList.toggle('is-active', avatar === target);
+            });
+
+            if (teamName && target) {
+                teamName.classList.remove('show');
+                setTimeout(() => {
+                    teamName.textContent = target.dataset.name || 'Member';
+                    teamName.classList.add('show');
+                }, 120);
+            }
+        }
+
+        const teamCluster = document.querySelector('.team-cluster');
+
+        avatars.forEach((avatar) => {
+            avatar.addEventListener('mouseenter', () => setActiveAvatar(avatar));
+            avatar.addEventListener('focus', () => setActiveAvatar(avatar));
+            avatar.addEventListener('click', () => setActiveAvatar(avatar));
+        });
+
+        teamCluster.addEventListener('mouseleave', () => {
+            resetActiveAvatar();
+        });
+    </script>
 </body>
 </html>
